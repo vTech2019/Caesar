@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <malloc.h>
 typedef unsigned char uchar;
-
+struct uchar2 {
+	uchar x;
+	uchar y;
+};
 size_t* first_freq(uchar* text, size_t length_text) {
 	size_t* freq = (size_t*)calloc(256, sizeof(size_t));
 	uchar* alphabet = (uchar*)malloc((256) * sizeof(uchar));
@@ -15,6 +18,23 @@ size_t* first_freq(uchar* text, size_t length_text) {
 		}
 	}
 	free(alphabet);
+	return freq;
+}
+
+size_t* first_freq(uchar* text, size_t length_text) {
+	size_t* freq = (size_t*)calloc(65536, sizeof(size_t));
+	//uchar2* alphabet = (uchar2*)malloc((65536) * sizeof(uchar2));
+	//for (size_t i = 0; i < 65536; i++) {
+	//	((unsigned short*)alphabet)[i] = i;
+	//}
+	for (size_t i = 0; i < length_text ; i++) {
+		//for (size_t j = 0; j < 65536; j++) {
+		//	if (*((unsigned short*)(alphabet + j)) == *((unsigned short*)(text + i)));
+		//		freq[j]++;
+		//}
+		freq[text[i] || text[i-1] << 8]++;
+	}
+	//free(alphabet);
 	return freq;
 }
 
@@ -84,6 +104,7 @@ struct data {
 	uchar symbol_1;
 	size_t freq;
 };
+
 uchar* decrypt(uchar* crypt_text, size_t length_crypt_text, size_t* freq_crypt_text, size_t* freq_text) {
 	data* crypt_data = (data*)malloc(256 * sizeof(data));
 	data* decrypt_data = (data*)malloc(256 * sizeof(data));
@@ -137,35 +158,6 @@ uchar* decrypt(uchar* crypt_text, size_t length_crypt_text, size_t* freq_crypt_t
 	for (size_t i = 0; i < 256; i++) {
 		printf("%c %c %ld\n", crypt_data[i].symbol_0, crypt_data[i].symbol_1, crypt_data[i].freq);
 	}
-
-	//uchar* max_freq = (uchar*)calloc(256, sizeof(uchar));
-	//uchar* max_freq_crypt = (uchar*)calloc(256, sizeof(uchar));
-	//for (size_t i = 0; i < 256; i++) {
-	//	size_t max = 0;
-	//	size_t index = 0; 
-	//	size_t j = 0;
-	//	for (; j < 256; j++) {
-	//		if (max < freq_text[j]) {
-	//			max = freq_text[j];
-	//			index = j;
-	//		}
-	//	}
-	//	freq_text[j] = 0;
-	//	max_freq[i] = index;
-	//}
-	//for (size_t i = 0; i < 256; i++) {
-	//	size_t max = 0;
-	//	size_t index = 0; 
-	//	size_t j = 0;
-	//	for (; j < 256; j++) {
-	//		if (max < freq_crypt_text[j]) {
-	//			max = freq_crypt_text[j];
-	//			index = j;
-	//		}
-	//	}
-	//	freq_crypt_text[j] = 0;
-	//	max_freq_crypt[i] = index;
-	//}
 	for (size_t i = 0; i < length_crypt_text; i++) {
 				decrypt_text[i] = crypt_data[crypt_text[i]].symbol_0;
 		
